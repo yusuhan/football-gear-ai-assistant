@@ -1,11 +1,11 @@
 """Persistence repository for conversations, messages and Agent traces."""
 
 import json
-import sqlite3
 from datetime import datetime, timezone
-from pathlib import Path
 from typing import Any, Optional
 from uuid import uuid4
+
+from app.db.client import DatabaseTarget, connect_database
 
 
 def utc_now() -> str:
@@ -15,9 +15,9 @@ def utc_now() -> str:
 
 
 class ConversationRepository:
-    """Store the customer support conversation lifecycle in SQLite."""
+    """Store the customer support conversation lifecycle."""
 
-    def __init__(self, database_path: Path) -> None:
+    def __init__(self, database_path: DatabaseTarget) -> None:
         self.database_path = database_path
 
     def get_or_create_conversation(self, conversation_id: Optional[str], user_id: str, channel: str) -> str:
@@ -289,12 +289,10 @@ class ConversationRepository:
 
         return int(self._fetch_one("SELECT COUNT(*) AS count FROM handoff_tickets WHERE status = 'open'")["count"])
 
-    def _connect(self) -> sqlite3.Connection:
-        """Open a SQLite connection with dictionary-like rows."""
+    def _connect(self):
+        """Open a database connection with dictionary-like rows."""
 
-        connection = sqlite3.connect(self.database_path)
-        connection.row_factory = sqlite3.Row
-        return connection
+        return connect_database(self.database_path)
 
     def _execute(self, query: str, params: list[Any]) -> None:
         """Execute one write query."""

@@ -1,14 +1,15 @@
 """Repository for product, inventory and size-guide queries."""
 
-import sqlite3
 from pathlib import Path
 from typing import Any, Optional
+
+from app.db.client import DatabaseTarget, connect_database
 
 
 class ProductRepository:
     """Small SQLite repository used by Agent tools."""
 
-    def __init__(self, database_path: Path) -> None:
+    def __init__(self, database_path: DatabaseTarget) -> None:
         self.database_path = database_path
 
     def list_products(self) -> list[dict[str, Any]]:
@@ -89,12 +90,10 @@ class ProductRepository:
         )
         return rows[0] if rows else None
 
-    def _connect(self) -> sqlite3.Connection:
-        """Open a SQLite connection with dictionary-like rows."""
+    def _connect(self):
+        """Open a database connection with dictionary-like rows."""
 
-        connection = sqlite3.connect(self.database_path)
-        connection.row_factory = sqlite3.Row
-        return connection
+        return connect_database(self.database_path)
 
     def _fetch_one(self, query: str, params: Optional[list[Any]] = None) -> dict[str, Any]:
         """Fetch one row as a plain dictionary."""

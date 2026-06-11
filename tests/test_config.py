@@ -27,6 +27,14 @@ class SettingsTest(unittest.TestCase):
             ["https://app.example.com", "https://admin.example.com"],
         )
 
+    def test_database_url_takes_precedence_over_local_path(self) -> None:
+        settings = Settings(
+            database_url="postgresql://example.test/app",
+            database_path="data/local.db",
+        )
+
+        self.assertEqual(settings.database_target(), "postgresql://example.test/app")
+
 
 if __name__ == "__main__":
     unittest.main()

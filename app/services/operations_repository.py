@@ -1,13 +1,12 @@
 """Persistence for operations users, sessions and audit logs."""
 
 import json
-import sqlite3
 from datetime import datetime, timedelta, timezone
-from pathlib import Path
 from typing import Any, Optional
 from uuid import uuid4
 
 from app.core.security import create_session_token, hash_password, hash_session_token, verify_password
+from app.db.client import DatabaseIntegrityError, DatabaseTarget, connect_database
 
 
 def utc_now() -> datetime:
@@ -17,7 +16,7 @@ def utc_now() -> datetime:
 class OperationsRepository:
     """Authenticate support users and persist their sensitive actions."""
 
-    def __init__(self, database_path: Path, session_hours: int = 8) -> None:
+    def __init__(self, database_path: DatabaseTarget, session_hours: int = 8) -> None:
         self.database_path = database_path
         self.session_hours = session_hours
 
@@ -98,7 +97,7 @@ class OperationsRepository:
                 """,
                 [user_id, username, hash_password(password), role, now, now],
             )
-        except sqlite3.IntegrityError:
+        except DatabaseIntegrityError:
             return None
         return self.get_user(user_id)
 
@@ -226,10 +225,8 @@ class OperationsRepository:
             row["details"] = json.loads(row.pop("details_json"))
         return rows
 
-    def _connect(self) -> sqlite3.Connection:
-        connection = sqlite3.connect(self.database_path)
-        connection.row_factory = sqlite3.Row
-        return connection
+    def _connect(self):
+        return connect_database(self.database_path)
 
     def _execute(self, query: str, params: list[Any]) -> None:
         with self._connect() as connection:

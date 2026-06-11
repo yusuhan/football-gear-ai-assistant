@@ -17,7 +17,7 @@ class APITest(unittest.TestCase):
     def setUp(self) -> None:
         self.temp_directory = TemporaryDirectory()
         database_path = str(Path(self.temp_directory.name) / "test.db")
-        with patch.dict("os.environ", {"DATABASE_PATH": database_path}):
+        with patch.dict("os.environ", {"DATABASE_PATH": database_path, "DATABASE_URL": ""}):
             app = create_app()
         self.client = TestClient(app)
         self.settings = app.state.settings

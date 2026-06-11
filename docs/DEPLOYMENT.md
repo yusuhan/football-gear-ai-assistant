@@ -1,18 +1,31 @@
 # 公网部署指南
 
-当前最简单的真实部署方案是：Render 托管 FastAPI 和持久化 SQLite，Vercel 托管 Next.js。
+当前免费部署方案是：Render Free 托管 FastAPI，Neon Free 托管 PostgreSQL，Vercel 托管 Next.js。
 
-## 1. 部署后端到 Render
+## 1. 创建 Neon PostgreSQL
+
+1. 登录 [Neon](https://neon.tech/) 并创建免费项目。
+2. Region 优先选择新加坡或离 Render 较近的区域。
+3. 在 Neon 控制台复制连接字符串，格式类似：
+
+```text
+postgresql://user:password@host/database?sslmode=require
+```
+
+连接字符串包含密码，不要提交到 GitHub，也不要发送到聊天或截图中。
+
+## 2. 部署后端到 Render
 
 1. 将代码推送到 GitHub。
 2. 在 Render 中选择 **New > Blueprint**，连接仓库根目录的 `render.yaml`。
-3. 创建时填写 `BACKEND_CORS_ORIGIN`，值暂时填写计划使用的 Vercel 域名；获得正式域名后可再次修改。
-4. Render 会生成 `ADMIN_PASSWORD` 和 `SUPPORT_PASSWORD`。在服务环境变量页面查看并安全保存它们。
-5. 等待 `https://<render-domain>/health` 返回 `status: ok`。
+3. 创建时填写 `DATABASE_URL`，粘贴 Neon 连接字符串。
+4. 填写 `BACKEND_CORS_ORIGIN`，值暂时填写计划使用的 Vercel 域名；获得正式域名后可再次修改。
+5. Render 会生成 `ADMIN_PASSWORD` 和 `SUPPORT_PASSWORD`。在服务环境变量页面查看并安全保存它们。
+6. 等待 `https://<render-domain>/health` 返回 `status: ok`。
 
-`render.yaml` 使用 Starter 实例和 1 GB 持久磁盘。磁盘保存 SQLite 数据，但会关闭 Render 的零停机部署；业务增长后应迁移到 PostgreSQL。
+`render.yaml` 使用 Free 实例。免费实例空闲后会休眠，首次请求可能需要等待启动，但 PostgreSQL 数据不会因此丢失。
 
-## 2. 部署前端到 Vercel
+## 3. 部署前端到 Vercel
 
 1. 在 Vercel 导入同一个 GitHub 仓库。
 2. 将 **Root Directory** 设置为 `frontend`。
@@ -28,7 +41,7 @@ NEXT_PUBLIC_API_BASE_URL=https://<render-domain>
 
 多个允许域名可以使用英文逗号分隔，例如生产域名和自定义域名。
 
-## 3. 公网验收
+## 4. 公网验收
 
 ```bash
 .venv/bin/python scripts/validate_deployment.py \
@@ -43,8 +56,8 @@ NEXT_PUBLIC_API_BASE_URL=https://<render-domain>
 - 创建投诉工单并完成处理。
 - 重新部署后端，确认历史工单仍然存在。
 
-## 4. 生产注意事项
+## 5. 生产注意事项
 
 - 不要提交 `.env`、OpenAI Key 或运营账号密码。
 - 如果启用 OpenAI，必须在 Render 单独设置 `OPENAI_API_KEY` 和 `USE_OPENAI=true`。
-- SQLite 方案仅适合单实例 MVP；多实例或高并发前迁移到 PostgreSQL。
+- 本地 SQLite 与生产 PostgreSQL 共用 Repository 接口，部署时无需修改业务代码。

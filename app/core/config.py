@@ -2,6 +2,7 @@
 
 import os
 from pathlib import Path
+from typing import Union
 
 from pydantic import BaseModel, Field
 
@@ -13,6 +14,7 @@ class Settings(BaseModel):
     """Runtime configuration for the API service."""
 
     app_env: str = Field(default_factory=lambda: os.getenv("APP_ENV", "local"))
+    database_url: str = Field(default_factory=lambda: os.getenv("DATABASE_URL", ""))
     database_path: Path = Field(default_factory=lambda: Path(os.getenv("DATABASE_PATH", "data/football_gear.db")))
     products_path: Path = Field(default_factory=lambda: Path(os.getenv("PRODUCTS_PATH", "data/products.json")))
     inventory_path: Path = Field(default_factory=lambda: Path(os.getenv("INVENTORY_PATH", "data/inventory.json")))
@@ -39,3 +41,8 @@ class Settings(BaseModel):
         if self.app_env == "local":
             origins.extend(["http://127.0.0.1:3000", "http://localhost:3000"])
         return list(dict.fromkeys(origins))
+
+    def database_target(self) -> Union[str, Path]:
+        """Use hosted PostgreSQL when configured, otherwise local SQLite."""
+
+        return self.database_url or self.database_path

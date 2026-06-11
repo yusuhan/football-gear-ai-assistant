@@ -5,30 +5,36 @@ manual SQL setup. This keeps interview demos reproducible.
 """
 
 import json
-import sqlite3
 from pathlib import Path
 from typing import Iterable
 
 from app.core.config import Settings
 from app.core.security import hash_password
+from app.db.client import DatabaseConnection, connect_database, is_postgres
 
 
 def initialize_database(settings: Settings) -> None:
     """Create tables and seed demo data on application startup."""
 
-    settings.database_path.parent.mkdir(parents=True, exist_ok=True)
-    with sqlite3.connect(settings.database_path) as connection:
+    target = settings.database_target()
+    if not is_postgres(target):
+        Path(target).parent.mkdir(parents=True, exist_ok=True)
+    with connect_database(target) as connection:
         _create_tables(connection)
-        for table, path in [
+        seed_data = [
             ("products", settings.products_path),
             ("inventory", settings.inventory_path),
             ("size_guide", settings.size_guide_path),
-        ]:
-            _replace_rows(connection, table, _read_json(path))
+        ]
+        # Child rows must be removed first so PostgreSQL foreign keys remain valid.
+        for table in ("inventory", "products", "size_guide"):
+            connection.execute(f"DELETE FROM {table}")
+        for table, path in seed_data:
+            _insert_rows(connection, table, _read_json(path))
         _seed_operations_users(connection, settings)
 
 
-def _create_tables(connection: sqlite3.Connection) -> None:
+def _create_tables(connection: DatabaseConnection) -> None:
     """Create the small product, inventory and size guide schema."""
 
     connection.executescript(
@@ -168,7 +174,7 @@ def _create_tables(connection: sqlite3.Connection) -> None:
     )
 
 
-def _seed_operations_users(connection: sqlite3.Connection, settings: Settings) -> None:
+def _seed_operations_users(connection: DatabaseConnection, settings: Settings) -> None:
     """Create bootstrap accounts once without overwriting managed passwords."""
 
     from datetime import datetime, timezone
@@ -179,11 +185,14 @@ def _seed_operations_users(connection: sqlite3.Connection, settings: Settings) -
         ("ops_support", settings.support_username, settings.support_password, "support"),
     ]
     for user_id, username, password, role in users:
+        conflict_sql = "ON CONFLICT (id) DO NOTHING" if connection.postgres else ""
+        insert_prefix = "INSERT INTO" if connection.postgres else "INSERT OR IGNORE INTO"
         connection.execute(
-            """
-            INSERT OR IGNORE INTO operations_users (
+            f"""
+            {insert_prefix} operations_users (
                 id, username, password_hash, role, is_active, created_at, updated_at
             ) VALUES (?, ?, ?, ?, 1, ?, ?)
+            {conflict_sql}
             """,
             [user_id, username, hash_password(password), role, now, now],
         )
@@ -196,20 +205,28 @@ def _read_json(path: Path) -> list[dict]:
         return json.load(file)
 
 
-def _ensure_columns(connection: sqlite3.Connection, table: str, columns: dict[str, str]) -> None:
+def _ensure_columns(connection: DatabaseConnection, table: str, columns: dict[str, str]) -> None:
     """Add missing columns for simple local schema migrations."""
 
-    existing_columns = {row[1] for row in connection.execute(f"PRAGMA table_info({table})")}
+    if connection.postgres:
+        existing_columns = {
+            row["column_name"]
+            for row in connection.execute(
+                "SELECT column_name FROM information_schema.columns WHERE table_name = ?",
+                [table],
+            ).fetchall()
+        }
+    else:
+        existing_columns = {row[1] for row in connection.execute(f"PRAGMA table_info({table})")}
     for column_name, column_type in columns.items():
         if column_name not in existing_columns:
             connection.execute(f"ALTER TABLE {table} ADD COLUMN {column_name} {column_type}")
 
 
-def _replace_rows(connection: sqlite3.Connection, table: str, rows: Iterable[dict]) -> None:
-    """Replace all rows in a table with the supplied dictionaries."""
+def _insert_rows(connection: DatabaseConnection, table: str, rows: Iterable[dict]) -> None:
+    """Insert supplied seed dictionaries into an already-cleared table."""
 
     row_list = list(rows)
-    connection.execute(f"DELETE FROM {table}")
     if not row_list:
         return
 

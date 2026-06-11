@@ -38,6 +38,8 @@ class DemoDataService:
     """Back up and restore the SQLite database to its seeded demo state."""
 
     def __init__(self, settings: Settings) -> None:
+        if settings.database_url:
+            raise ValueError("Demo data reset only supports the local SQLite database")
         self.settings = settings
         self.database_path = settings.database_path.resolve()
 

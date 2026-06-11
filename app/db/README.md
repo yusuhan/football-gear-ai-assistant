@@ -1,8 +1,10 @@
 # db 模块
 
-`db` 模块负责 SQLite 初始化和种子数据导入。
+`db` 模块负责数据库连接、表初始化和种子数据导入。
 
-MVP 使用 SQLite 是为了本地可运行和可部署简单；真实业务中可以平滑迁移到 PostgreSQL 或云数据库，因为上层只通过 repository 访问数据。
+- 本地默认使用 SQLite，便于零配置开发和测试。
+- 生产设置 `DATABASE_URL` 后自动使用 PostgreSQL。
+- `client.py` 统一连接、字典行和 SQL 占位符差异。
 
 ## 当前表
 

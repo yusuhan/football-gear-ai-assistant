@@ -43,10 +43,11 @@
 - 新增安全的演示数据重置能力：默认备份 SQLite，清理运行数据并恢复固定商品与初始运营账号。
 - 完成生产部署配置加固：Render 持久磁盘、健康检查、生产 CORS 和 Vercel 环境变量外置。
 - 新增公网部署指南与 `validate_deployment.py`，可自动检查健康状态、CORS 和前端可达性。
+- 将生产数据层迁移为 PostgreSQL：新增 SQLite/PostgreSQL 适配器，Render 改用 Free 实例，Neon 保存持久数据。
 
 ### 本地验证
 
-- `.venv/bin/python -m unittest discover -s tests`：27 个测试通过。
+- `.venv/bin/python -m unittest discover -s tests`：31 个测试通过。
 - 后端依赖已安装在 `.venv`。
 - FastAPI 已启动并通过 curl 验证：
   - `/health`
@@ -73,8 +74,10 @@
 - 当前 Mac 未安装 Docker，因此 Compose 已完成格式检查，但未在本机实际构建镜像。
 - 前端脚本使用 `next dev --webpack` 和 `next build --webpack`，当前构建稳定通过。
 - `npm audit --omit=dev` 仍提示 Next 内部 PostCSS 依赖有 2 个 moderate 漏洞；npm 自动修复方案会降级 Next 到旧版本，暂不执行 `--force`。
+- PostgreSQL 兼容层已通过本地适配测试，仍需连接实际 Neon 数据库完成集成验收。
 
 ### 下一步
 
-- 将仓库推送到 GitHub，并按 `docs/DEPLOYMENT.md` 创建 Render Blueprint 和 Vercel 项目。
+- 创建 Neon Free 数据库，并将连接字符串填入 Render Blueprint 的 `DATABASE_URL`。
+- 重新创建 Render Free Blueprint，再创建 Vercel 项目。
 - 获得两个公网域名后运行 `scripts/validate_deployment.py` 完成端到端验收。

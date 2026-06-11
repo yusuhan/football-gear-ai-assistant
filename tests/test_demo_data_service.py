@@ -16,7 +16,7 @@ class DemoDataServiceTest(unittest.TestCase):
     def test_reset_backs_up_and_clears_runtime_data(self) -> None:
         with TemporaryDirectory() as directory:
             database_path = Path(directory) / "demo.db"
-            settings = Settings(database_path=database_path)
+            settings = Settings(database_url="", database_path=database_path)
             initialize_database(settings)
 
             with sqlite3.connect(database_path) as connection:

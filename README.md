@@ -1,6 +1,6 @@
 # Football Gear AI Assistant
 
-足球用品零售 AI 客服系统。当前版本已经具备 Agent、Tool Calling、FAQ RAG、FastAPI、SQLite、前端聊天界面和持久化会话能力，可继续扩展到淘宝/1688/企微/CRM 等真实客服渠道。
+足球用品零售 AI 客服系统。当前版本已经具备 Agent、Tool Calling、FAQ RAG、FastAPI、数据库持久化、前端聊天界面和运营后台，可继续扩展到淘宝/1688/企微/CRM 等真实客服渠道。
 
 ## 项目目标
 
@@ -16,7 +16,7 @@
 - 后端：Python、FastAPI、Pydantic
 - Agent：OpenAI SDK 可选，默认本地规则路由保证演示稳定
 - Tool Calling：`check_inventory`、`search_products`、`get_size_recommendation`
-- 数据库：SQLite
+- 数据库：本地 SQLite / 生产 PostgreSQL
 - RAG：本地 FAQ 检索，保留 ChromaDB 替换边界
 - 前端：Next.js、Tailwind、shadcn/ui 风格组件
 - 部署：Render/Railway 后端，Vercel 前端
@@ -42,7 +42,7 @@
 ├── app                  # FastAPI 后端
 │   ├── api              # HTTP 路由
 │   ├── core             # 配置
-│   ├── db               # SQLite 初始化
+│   ├── db               # SQLite/PostgreSQL 连接与初始化
 │   ├── models           # Pydantic 模型
 │   └── services         # Agent、Tool Router、RAG、Repository
 ├── data                 # 商品、库存、尺码、FAQ 种子数据
@@ -140,7 +140,7 @@ curl -X POST http://127.0.0.1:8000/chat \
 .venv/bin/python -m unittest discover -s tests
 ```
 
-当前已验证：27 个后端测试通过。
+当前已验证：31 个后端测试通过。
 
 前端验证：
 

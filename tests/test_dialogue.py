@@ -15,9 +15,9 @@ class FootballGearAgentTest(unittest.TestCase):
     """Validate tool routing and FAQ fallback."""
 
     def setUp(self) -> None:
-        settings = Settings()
+        settings = Settings(database_url="")
         initialize_database(settings)
-        repository = ProductRepository(settings.database_path)
+        repository = ProductRepository(settings.database_target())
         self.agent = FootballGearAgent(
             tool_router=ToolRouter(repository),
             faq_knowledge_base=FAQKnowledgeBase.from_json(settings.faq_path),

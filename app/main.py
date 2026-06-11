@@ -25,9 +25,10 @@ def create_app() -> FastAPI:
     ):
         raise RuntimeError("Operations passwords must be changed outside the local environment")
     initialize_database(settings)
-    repository = ProductRepository(settings.database_path)
-    conversation_repository = ConversationRepository(settings.database_path)
-    operations_repository = OperationsRepository(settings.database_path, settings.operations_session_hours)
+    database_target = settings.database_target()
+    repository = ProductRepository(database_target)
+    conversation_repository = ConversationRepository(database_target)
+    operations_repository = OperationsRepository(database_target, settings.operations_session_hours)
     faq_knowledge_base = FAQKnowledgeBase.from_json(settings.faq_path, min_score=settings.min_rag_score)
     tool_router = ToolRouter(repository=repository)
     agent = FootballGearAgent(
