@@ -1,0 +1,38 @@
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      APP_ENV: local
+      DATABASE_PATH: /app/runtime/football_gear.db
+      BACKEND_CORS_ORIGIN: http://localhost:3000
+      ADMIN_USERNAME: ${ADMIN_USERNAME:-admin}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-local-admin-change-me}
+      SUPPORT_USERNAME: ${SUPPORT_USERNAME:-support}
+      SUPPORT_PASSWORD: ${SUPPORT_PASSWORD:-local-support-change-me}
+      OPERATIONS_SESSION_HOURS: ${OPERATIONS_SESSION_HOURS:-8}
+      USE_OPENAI: ${USE_OPENAI:-false}
+      OPENAI_MODEL: ${OPENAI_MODEL:-gpt-4.1-mini}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+    ports:
+      - "8000:8000"
+    volumes:
+      - football_gear_data:/app/runtime
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_API_BASE_URL: ${NEXT_PUBLIC_API_BASE_URL:-http://localhost:8000}
+    depends_on:
+      backend:
+        condition: service_healthy
+    ports:
+      - "3000:3000"
+    restart: unless-stopped
+
+volumes:
+  football_gear_data:

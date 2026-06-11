@@ -1,0 +1,21 @@
+[
+  {"product_id": "P001", "size": 41, "stock": 4},
+  {"product_id": "P001", "size": 42, "stock": 6},
+  {"product_id": "P001", "size": 43, "stock": 12},
+  {"product_id": "P001", "size": 44, "stock": 2},
+  {"product_id": "P002", "size": 40, "stock": 11},
+  {"product_id": "P002", "size": 41, "stock": 16},
+  {"product_id": "P002", "size": 42, "stock": 8},
+  {"product_id": "P002", "size": 43, "stock": 7},
+  {"product_id": "P003", "size": 42, "stock": 5},
+  {"product_id": "P003", "size": 43, "stock": 3},
+  {"product_id": "P004", "size": 42, "stock": 9},
+  {"product_id": "P004", "size": 43, "stock": 6},
+  {"product_id": "P005", "size": 8, "stock": 10},
+  {"product_id": "P005", "size": 9, "stock": 14},
+  {"product_id": "P005", "size": 10, "stock": 7},
+  {"product_id": "P006", "size": 0, "stock": 20},
+  {"product_id": "P007", "size": 0, "stock": 18},
+  {"product_id": "P008", "size": 42, "stock": 6},
+  {"product_id": "P008", "size": 43, "stock": 5}
+]

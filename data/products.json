@@ -1,0 +1,82 @@
+[
+  {
+    "id": "P001",
+    "name": "Nike Mercurial 16 Elite",
+    "brand": "Nike",
+    "category": "football_boots",
+    "price": 1499,
+    "surface": "FG",
+    "description": "速度型足球鞋，适合需要爆发、冲刺和快速变向的球员。",
+    "recommended_position": "Winger"
+  },
+  {
+    "id": "P002",
+    "name": "Nike Mercurial Academy",
+    "brand": "Nike",
+    "category": "football_boots",
+    "price": 699,
+    "surface": "FG/MG",
+    "description": "入门到进阶速度型球鞋，预算友好，适合边锋和前锋。",
+    "recommended_position": "Winger"
+  },
+  {
+    "id": "P003",
+    "name": "Adidas Predator League",
+    "brand": "Adidas",
+    "category": "football_boots",
+    "price": 799,
+    "surface": "FG",
+    "description": "强调控球和射门摩擦，适合中场和前腰。",
+    "recommended_position": "Midfielder"
+  },
+  {
+    "id": "P004",
+    "name": "Nike Tiempo Legend Academy",
+    "brand": "Nike",
+    "category": "football_boots",
+    "price": 649,
+    "surface": "AG",
+    "description": "触球稳定、鞋面舒适，适合后卫和注重稳定性的球员。",
+    "recommended_position": "Defender"
+  },
+  {
+    "id": "P005",
+    "name": "Elite Goalkeeper Gloves",
+    "brand": "StorePro",
+    "category": "goalkeeper_gloves",
+    "price": 399,
+    "surface": "All",
+    "description": "乳胶掌面，抓地和缓震表现均衡，适合日常训练和比赛。",
+    "recommended_position": "Goalkeeper"
+  },
+  {
+    "id": "P006",
+    "name": "Goalkeeper Long Sleeve Jersey",
+    "brand": "StorePro",
+    "category": "goalkeeper_apparel",
+    "price": 299,
+    "surface": "All",
+    "description": "长袖守门员服，肘部加厚，适合门将训练和比赛。",
+    "recommended_position": "Goalkeeper"
+  },
+  {
+    "id": "P007",
+    "name": "Keeper Elbow Knee Pads",
+    "brand": "StorePro",
+    "category": "protective_gear",
+    "price": 189,
+    "surface": "All",
+    "description": "护肘护膝套装，降低扑救和倒地时的冲击。",
+    "recommended_position": "Goalkeeper"
+  },
+  {
+    "id": "P008",
+    "name": "Puma Future Match",
+    "brand": "Puma",
+    "category": "football_boots",
+    "price": 899,
+    "surface": "MG",
+    "description": "鞋面包裹感强，适合盘带和灵活变向。",
+    "recommended_position": "Midfielder"
+  }
+]
