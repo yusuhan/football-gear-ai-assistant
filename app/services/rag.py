@@ -10,6 +10,17 @@ import re
 from dataclasses import dataclass
 from pathlib import Path
 
+CHINESE_STOP_BIGRAMS = {
+    "什么",
+    "怎么",
+    "如何",
+    "哪些",
+    "多少",
+    "可以",
+    "是否",
+    "问题",
+}
+
 
 @dataclass(frozen=True)
 class FAQArticle:
@@ -92,5 +103,11 @@ class FAQKnowledgeBase:
         lowered = text.lower()
         english_tokens = re.findall(r"[a-z0-9_]+", lowered)
         chinese_chars = re.findall(r"[\u4e00-\u9fff]", lowered)
-        chinese_bigrams = [left + right for left, right in zip(chinese_chars, chinese_chars[1:])]
-        return set(english_tokens + chinese_chars + chinese_bigrams)
+        chinese_bigrams = [
+            left + right
+            for left, right in zip(chinese_chars, chinese_chars[1:])
+            if left + right not in CHINESE_STOP_BIGRAMS
+        ]
+        # Single Chinese characters create false positives such as matching
+        # "球衣尺码" to a football-boot surface article solely through "球".
+        return set(english_tokens + chinese_bigrams)

@@ -140,7 +140,7 @@ curl -X POST http://127.0.0.1:8000/chat \
 .venv/bin/python -m unittest discover -s tests
 ```
 
-当前已验证：32 个后端测试通过。
+当前已验证：35 个后端测试通过。
 
 前端验证：
 

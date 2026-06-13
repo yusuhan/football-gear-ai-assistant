@@ -7,7 +7,8 @@
     "price": 1499,
     "surface": "FG",
     "description": "速度型足球鞋，适合需要爆发、冲刺和快速变向的球员。",
-    "recommended_position": "Winger"
+    "recommended_position": "Winger",
+    "fit_profile": "narrow"
   },
   {
     "id": "P002",
@@ -17,7 +18,8 @@
     "price": 699,
     "surface": "FG/MG",
     "description": "入门到进阶速度型球鞋，预算友好，适合边锋和前锋。",
-    "recommended_position": "Winger"
+    "recommended_position": "Winger",
+    "fit_profile": "narrow"
   },
   {
     "id": "P003",
@@ -27,7 +29,8 @@
     "price": 799,
     "surface": "FG",
     "description": "强调控球和射门摩擦，适合中场和前腰。",
-    "recommended_position": "Midfielder"
+    "recommended_position": "Midfielder",
+    "fit_profile": "regular"
   },
   {
     "id": "P004",
@@ -37,7 +40,8 @@
     "price": 649,
     "surface": "AG",
     "description": "触球稳定、鞋面舒适，适合后卫和注重稳定性的球员。",
-    "recommended_position": "Defender"
+    "recommended_position": "Defender",
+    "fit_profile": "wide"
   },
   {
     "id": "P005",
@@ -47,7 +51,8 @@
     "price": 399,
     "surface": "All",
     "description": "乳胶掌面，抓地和缓震表现均衡，适合日常训练和比赛。",
-    "recommended_position": "Goalkeeper"
+    "recommended_position": "Goalkeeper",
+    "fit_profile": "regular"
   },
   {
     "id": "P006",
@@ -57,7 +62,8 @@
     "price": 299,
     "surface": "All",
     "description": "长袖守门员服，肘部加厚，适合门将训练和比赛。",
-    "recommended_position": "Goalkeeper"
+    "recommended_position": "Goalkeeper",
+    "fit_profile": "regular"
   },
   {
     "id": "P007",
@@ -67,7 +73,8 @@
     "price": 189,
     "surface": "All",
     "description": "护肘护膝套装，降低扑救和倒地时的冲击。",
-    "recommended_position": "Goalkeeper"
+    "recommended_position": "Goalkeeper",
+    "fit_profile": "regular"
   },
   {
     "id": "P008",
@@ -77,6 +84,7 @@
     "price": 899,
     "surface": "MG",
     "description": "鞋面包裹感强，适合盘带和灵活变向。",
-    "recommended_position": "Midfielder"
+    "recommended_position": "Midfielder",
+    "fit_profile": "wide"
   }
 ]

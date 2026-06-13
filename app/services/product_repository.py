@@ -39,8 +39,13 @@ class ProductRepository:
 
         return int(self._fetch_one("SELECT COUNT(*) AS count FROM inventory")["count"])
 
-    def search_products(self, position: Optional[str], budget: Optional[int]) -> list[dict[str, Any]]:
-        """Find products by football position and budget."""
+    def search_products(
+        self,
+        position: Optional[str],
+        budget: Optional[int],
+        fit_profile: Optional[str] = None,
+    ) -> list[dict[str, Any]]:
+        """Find products by football position, budget and boot fit."""
 
         conditions = []
         params: list[Any] = []
@@ -55,6 +60,9 @@ class ProductRepository:
             # goalkeeper gloves or protective gear ahead of boots.
             conditions.append("category = ?")
             params.append("football_boots")
+        if fit_profile:
+            conditions.append("fit_profile = ?")
+            params.append(fit_profile)
 
         where_sql = " AND ".join(conditions)
         query = f"SELECT * FROM products WHERE {where_sql} ORDER BY price ASC LIMIT 5"

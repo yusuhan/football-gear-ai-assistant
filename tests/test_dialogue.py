@@ -45,6 +45,22 @@ class FootballGearAgentTest(unittest.TestCase):
         self.assertEqual(response.route, "rag")
         self.assertEqual(response.sources[0].article_id, "FAQ001")
 
+    def test_narrow_foot_question_filters_by_boot_fit(self) -> None:
+        response = self.agent.answer(ChatRequest(message="我脚比较窄适合哪些足球鞋"))
+
+        self.assertEqual(response.intent, "product_recommendation")
+        self.assertEqual(response.tool_calls[0].arguments["fit_profile"], "narrow")
+        self.assertIn("Mercurial", response.answer)
+        self.assertNotIn("Tiempo", response.answer)
+
+    def test_apparel_size_question_requests_missing_measurements(self) -> None:
+        response = self.agent.answer(ChatRequest(message="我180cm球衣穿什么码"))
+
+        self.assertEqual(response.intent, "apparel_size_clarification")
+        self.assertEqual(response.route, "clarification")
+        self.assertIn("体重和胸围", response.answer)
+        self.assertNotIn("FG", response.answer)
+
 
 if __name__ == "__main__":
     unittest.main()

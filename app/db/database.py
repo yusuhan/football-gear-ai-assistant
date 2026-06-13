@@ -47,7 +47,8 @@ def _create_tables(connection: DatabaseConnection) -> None:
             price INTEGER NOT NULL,
             surface TEXT NOT NULL,
             description TEXT NOT NULL,
-            recommended_position TEXT NOT NULL
+            recommended_position TEXT NOT NULL,
+            fit_profile TEXT NOT NULL DEFAULT 'regular'
         );
 
         CREATE TABLE IF NOT EXISTS inventory (
@@ -172,6 +173,7 @@ def _create_tables(connection: DatabaseConnection) -> None:
             "resolved_at": "TEXT",
         },
     )
+    _ensure_columns(connection, "products", {"fit_profile": "TEXT NOT NULL DEFAULT 'regular'"})
 
 
 def _seed_operations_users(connection: DatabaseConnection, settings: Settings) -> None:

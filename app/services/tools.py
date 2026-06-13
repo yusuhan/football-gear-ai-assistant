@@ -24,10 +24,19 @@ class ToolRouter:
             return {"available": False, "product_name": product_name, "size": size, "stock": 0}
         return {"available": result["stock"] > 0, **result}
 
-    def search_products(self, position: Optional[str] = None, budget: Optional[int] = None) -> dict[str, Any]:
-        """Search products by position and budget."""
+    def search_products(
+        self,
+        position: Optional[str] = None,
+        budget: Optional[int] = None,
+        fit_profile: Optional[str] = None,
+    ) -> dict[str, Any]:
+        """Search products by position, budget and boot fit."""
 
-        products = self.repository.search_products(position=position, budget=budget)
+        products = self.repository.search_products(
+            position=position,
+            budget=budget,
+            fit_profile=fit_profile,
+        )
         return {"products": products, "count": len(products)}
 
     def get_size_recommendation(self, foot_length: float) -> dict[str, Any]:
@@ -51,6 +60,7 @@ class ToolRouter:
             return self.search_products(
                 position=arguments.get("position"),
                 budget=int(budget) if budget is not None else None,
+                fit_profile=arguments.get("fit_profile"),
             )
         if name == "get_size_recommendation":
             return self.get_size_recommendation(foot_length=float(arguments["foot_length"]))
@@ -83,6 +93,10 @@ OPENAI_TOOL_DEFINITIONS = [
                 "properties": {
                     "position": {"type": "string"},
                     "budget": {"type": "integer"},
+                    "fit_profile": {
+                        "type": "string",
+                        "enum": ["narrow", "regular", "wide"],
+                    },
                 },
                 "required": [],
             },

@@ -15,6 +15,10 @@ from app.services.rag import FAQHit, FAQKnowledgeBase
 from app.services.tools import OPENAI_TOOL_DEFINITIONS, ToolRouter
 
 FALLBACK_ANSWER = "我还没有找到足够准确的信息。你可以告诉我位置、预算、尺码、脚长或具体商品名，我会继续帮你查。"
+APPAREL_SIZE_CLARIFICATION = (
+    "仅凭身高还不能准确推荐球衣尺码。请再提供体重和胸围，并告诉我具体品牌或款式；"
+    "不同品牌版型差异较大，当前没有对应尺码表时我不会直接猜尺码。"
+)
 
 PRODUCT_ALIASES = {
     "Mercurial": ["mercurial", "刺客"],
@@ -60,6 +64,14 @@ class FootballGearAgent:
 
     def _answer_with_local_router(self, message: str) -> ChatResponse:
         """Deterministic routing used for local demos and tests."""
+
+        if self._is_apparel_size_question(message):
+            return ChatResponse(
+                answer=APPAREL_SIZE_CLARIFICATION,
+                intent="apparel_size_clarification",
+                confidence=0.92,
+                route="clarification",
+            )
 
         local_routes: list[tuple[str, Callable[[str], Optional[dict[str, Any]]]]] = [
             ("check_inventory", self._extract_inventory_args),
@@ -183,9 +195,15 @@ class FootballGearAgent:
 
         lines = ["根据你的需求，推荐："]
         for product in products[:3]:
-            lines.append(
-                f"- {product['name']}：{product['description']}，适合 {product['recommended_position']}，价格 {product['price']} 元。"
+            fit_text = {"narrow": "偏窄鞋楦", "regular": "常规鞋楦", "wide": "偏宽鞋楦"}.get(
+                product.get("fit_profile"),
+                "常规鞋楦",
             )
+            lines.append(
+                f"- {product['name']}：{fit_text}，{product['description'].rstrip('。')}，价格 {product['price']} 元。"
+            )
+        if arguments.get("fit_profile"):
+            lines.append("鞋楦标注来自当前商品资料，实际包裹感还会受脚背高度和袜子厚度影响。")
         return ChatResponse(
             answer="\n".join(lines),
             intent="product_recommendation",
@@ -236,7 +254,26 @@ class FootballGearAgent:
         budget_match = re.search(r"(\d{3,5})\s*元?(?:以内|以下|预算)?", message)
         budget = int(budget_match.group(1)) if budget_match else None
         position = self._guess_position(message)
-        return {"position": position, "budget": budget}
+        fit_profile = self._guess_fit_profile(message)
+        return {"position": position, "budget": budget, "fit_profile": fit_profile}
+
+    def _is_apparel_size_question(self, message: str) -> bool:
+        """Detect apparel sizing so shoe and surface advice cannot answer it."""
+
+        apparel_keywords = ["球衣", "上衣", "短袖", "长袖", "裤子", "服装"]
+        size_keywords = ["什么码", "多大码", "尺码", "穿几码", "穿什么"]
+        return any(keyword in message for keyword in apparel_keywords) and any(
+            keyword in message for keyword in size_keywords
+        )
+
+    def _guess_fit_profile(self, message: str) -> Optional[str]:
+        """Map user foot shape to the catalog fit profile."""
+
+        if any(keyword in message for keyword in ["脚窄", "窄脚", "比较窄", "瘦脚"]):
+            return "narrow"
+        if any(keyword in message for keyword in ["脚宽", "宽脚", "比较宽", "大宽脚"]):
+            return "wide"
+        return None
 
     def _guess_product_name(self, message: str) -> str:
         """Map partial user text to a demo product name."""
