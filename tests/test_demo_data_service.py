@@ -40,7 +40,7 @@ class DemoDataServiceTest(unittest.TestCase):
             self.assertTrue(result.backup_path.exists())
             self.assertEqual(result.cleared_rows["conversations"], 1)
             self.assertEqual(result.cleared_rows["operations_users"], 3)
-            self.assertEqual(result.product_count, 8)
+            self.assertEqual(result.product_count, 16)
             self.assertEqual(result.operations_user_count, 2)
 
             with sqlite3.connect(database_path) as connection:

@@ -34,6 +34,16 @@ POSITION_ALIASES = {
     "Defender": ["后卫", "防守"],
 }
 
+CATEGORY_ALIASES = [
+    ("football_boots", ["足球鞋", "球鞋", "战靴"]),
+    ("shin_guards", ["护腿板", "插板", "护板"]),
+    ("football_apparel", ["球衣", "足球服", "训练服", "比赛服"]),
+    ("football_socks", ["球袜", "足球袜", "袜子", "防滑袜"]),
+    ("footballs", ["足球", "比赛球", "训练球"]),
+    ("goalkeeper_gloves", ["守门员手套", "门将手套", "手套"]),
+    ("protective_gear", ["护具", "护膝", "护肘"]),
+]
+
 
 class FootballGearAgent:
     """Agent that routes customer messages to tools or FAQ retrieval."""
@@ -195,13 +205,14 @@ class FootballGearAgent:
 
         lines = ["根据你的需求，推荐："]
         for product in products[:3]:
-            fit_text = {"narrow": "偏窄鞋楦", "regular": "常规鞋楦", "wide": "偏宽鞋楦"}.get(
-                product.get("fit_profile"),
-                "常规鞋楦",
-            )
-            lines.append(
-                f"- {product['name']}：{fit_text}，{product['description'].rstrip('。')}，价格 {product['price']} 元。"
-            )
+            details = product["description"].rstrip("。")
+            if product["category"] == "football_boots":
+                fit_text = {"narrow": "偏窄鞋楦", "regular": "常规鞋楦", "wide": "偏宽鞋楦"}.get(
+                    product.get("fit_profile"),
+                    "常规鞋楦",
+                )
+                details = f"{fit_text}，{details}"
+            lines.append(f"- {product['name']}：{details}，价格 {product['price']} 元。")
         if arguments.get("fit_profile"):
             lines.append("鞋楦标注来自当前商品资料，实际包裹感还会受脚背高度和袜子厚度影响。")
         return ChatResponse(
@@ -255,7 +266,13 @@ class FootballGearAgent:
         budget = int(budget_match.group(1)) if budget_match else None
         position = self._guess_position(message)
         fit_profile = self._guess_fit_profile(message)
-        return {"position": position, "budget": budget, "fit_profile": fit_profile}
+        category = self._guess_category(message)
+        return {
+            "position": position,
+            "budget": budget,
+            "fit_profile": fit_profile,
+            "category": category,
+        }
 
     def _is_apparel_size_question(self, message: str) -> bool:
         """Detect apparel sizing so shoe and surface advice cannot answer it."""
@@ -273,6 +290,14 @@ class FootballGearAgent:
             return "narrow"
         if any(keyword in message for keyword in ["脚宽", "宽脚", "比较宽", "大宽脚"]):
             return "wide"
+        return None
+
+    def _guess_category(self, message: str) -> Optional[str]:
+        """Map customer language to a catalog category."""
+
+        for category, aliases in CATEGORY_ALIASES:
+            if any(alias in message for alias in aliases):
+                return category
         return None
 
     def _guess_product_name(self, message: str) -> str:

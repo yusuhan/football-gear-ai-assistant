@@ -183,6 +183,7 @@ class ProductResponse(BaseModel):
     surface: str
     description: str
     recommended_position: str
+    fit_profile: str = "regular"
 
 
 class InventoryResponse(BaseModel):

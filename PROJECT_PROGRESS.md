@@ -48,10 +48,11 @@
 - 修复 psycopg 批量种子写入：PostgreSQL `executemany` 改由 cursor 执行，并增加适配层回归测试。
 - 公网验收脚本超时调整为 90 秒，以覆盖 Render Free 实例冷启动场景。
 - 修复生产对话误路由：增加鞋楦宽度筛选、球衣尺码澄清，并移除中文单字 RAG 误匹配。
+- 扩展完整足球装备目录：球衣、球袜、护腿板和足球成为独立品类，推荐工具支持按品类准确筛选。
 
 ### 本地验证
 
-- `.venv/bin/python -m unittest discover -s tests`：35 个测试通过。
+- `.venv/bin/python -m unittest discover -s tests`：37 个测试通过。
 - 后端依赖已安装在 `.venv`。
 - FastAPI 已启动并通过 curl 验证：
   - `/health`

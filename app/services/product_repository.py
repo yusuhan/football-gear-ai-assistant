@@ -44,18 +44,22 @@ class ProductRepository:
         position: Optional[str],
         budget: Optional[int],
         fit_profile: Optional[str] = None,
+        category: Optional[str] = None,
     ) -> list[dict[str, Any]]:
-        """Find products by football position, budget and boot fit."""
+        """Find products by category, position, budget and boot fit."""
 
         conditions = []
         params: list[Any] = []
         if budget is not None:
             conditions.append("price <= ?")
             params.append(budget)
+        if category:
+            conditions.append("category = ?")
+            params.append(category)
         if position:
             conditions.append("lower(recommended_position) LIKE ?")
             params.append(f"%{position.lower()}%")
-        else:
+        elif not category:
             # A generic "recommend football boots" request should not surface
             # goalkeeper gloves or protective gear ahead of boots.
             conditions.append("category = ?")

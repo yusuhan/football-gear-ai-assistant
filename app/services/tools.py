@@ -29,13 +29,15 @@ class ToolRouter:
         position: Optional[str] = None,
         budget: Optional[int] = None,
         fit_profile: Optional[str] = None,
+        category: Optional[str] = None,
     ) -> dict[str, Any]:
-        """Search products by position, budget and boot fit."""
+        """Search products by category, position, budget and boot fit."""
 
         products = self.repository.search_products(
             position=position,
             budget=budget,
             fit_profile=fit_profile,
+            category=category,
         )
         return {"products": products, "count": len(products)}
 
@@ -61,6 +63,7 @@ class ToolRouter:
                 position=arguments.get("position"),
                 budget=int(budget) if budget is not None else None,
                 fit_profile=arguments.get("fit_profile"),
+                category=arguments.get("category"),
             )
         if name == "get_size_recommendation":
             return self.get_size_recommendation(foot_length=float(arguments["foot_length"]))
@@ -87,7 +90,7 @@ OPENAI_TOOL_DEFINITIONS = [
         "type": "function",
         "function": {
             "name": "search_products",
-            "description": "Search football gear products by player position and budget.",
+            "description": "Search football gear by category, player position, budget and boot fit.",
             "parameters": {
                 "type": "object",
                 "properties": {
@@ -96,6 +99,18 @@ OPENAI_TOOL_DEFINITIONS = [
                     "fit_profile": {
                         "type": "string",
                         "enum": ["narrow", "regular", "wide"],
+                    },
+                    "category": {
+                        "type": "string",
+                        "enum": [
+                            "football_boots",
+                            "football_apparel",
+                            "football_socks",
+                            "shin_guards",
+                            "footballs",
+                            "goalkeeper_gloves",
+                            "protective_gear"
+                        ]
                     },
                 },
                 "required": [],

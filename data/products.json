@@ -58,7 +58,7 @@
     "id": "P006",
     "name": "Goalkeeper Long Sleeve Jersey",
     "brand": "StorePro",
-    "category": "goalkeeper_apparel",
+    "category": "football_apparel",
     "price": 299,
     "surface": "All",
     "description": "长袖守门员服，肘部加厚，适合门将训练和比赛。",
@@ -86,5 +86,93 @@
     "description": "鞋面包裹感强，适合盘带和灵活变向。",
     "recommended_position": "Midfielder",
     "fit_profile": "wide"
+  },
+  {
+    "id": "P009",
+    "name": "Nike Dri-FIT Academy Jersey",
+    "brand": "Nike",
+    "category": "football_apparel",
+    "price": 249,
+    "surface": "All",
+    "description": "速干短袖训练球衣，适合日常训练和业余比赛。",
+    "recommended_position": "All",
+    "fit_profile": "regular"
+  },
+  {
+    "id": "P010",
+    "name": "Adidas Tiro Competition Jersey",
+    "brand": "Adidas",
+    "category": "football_apparel",
+    "price": 329,
+    "surface": "All",
+    "description": "轻量比赛球衣，透气排汗，版型偏修身。",
+    "recommended_position": "All",
+    "fit_profile": "regular"
+  },
+  {
+    "id": "P011",
+    "name": "Nike Strike Football Socks",
+    "brand": "Nike",
+    "category": "football_socks",
+    "price": 89,
+    "surface": "All",
+    "description": "及膝比赛球袜，足弓支撑和重点区域缓震。",
+    "recommended_position": "All",
+    "fit_profile": "regular"
+  },
+  {
+    "id": "P012",
+    "name": "StorePro Grip Socks",
+    "brand": "StorePro",
+    "category": "football_socks",
+    "price": 59,
+    "surface": "All",
+    "description": "防滑足球袜，减少鞋内滑动，适合训练和比赛。",
+    "recommended_position": "All",
+    "fit_profile": "regular"
+  },
+  {
+    "id": "P013",
+    "name": "Nike Mercurial Lite Shin Guards",
+    "brand": "Nike",
+    "category": "shin_guards",
+    "price": 199,
+    "surface": "All",
+    "description": "轻量插板式护腿板，附固定护套，适合追求灵活性的球员。",
+    "recommended_position": "All",
+    "fit_profile": "regular"
+  },
+  {
+    "id": "P014",
+    "name": "Adidas Tiro League Shin Guards",
+    "brand": "Adidas",
+    "category": "shin_guards",
+    "price": 149,
+    "surface": "All",
+    "description": "硬壳护腿板配脚踝保护，覆盖更完整，适合对抗较多的比赛。",
+    "recommended_position": "Defender",
+    "fit_profile": "regular"
+  },
+  {
+    "id": "P015",
+    "name": "Nike Academy Team Football",
+    "brand": "Nike",
+    "category": "footballs",
+    "price": 169,
+    "surface": "All",
+    "description": "耐磨训练足球，适合高频日常训练。",
+    "recommended_position": "All",
+    "fit_profile": "regular"
+  },
+  {
+    "id": "P016",
+    "name": "Adidas UCL League Football",
+    "brand": "Adidas",
+    "category": "footballs",
+    "price": 299,
+    "surface": "All",
+    "description": "热粘合比赛级足球，飞行稳定性和触球反馈更好。",
+    "recommended_position": "All",
+    "fit_profile": "regular"
   }
 ]

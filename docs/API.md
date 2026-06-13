@@ -89,7 +89,7 @@ Authorization: Bearer <access_token>
 ```json
 {
   "status": "ok",
-  "products": 8,
+  "products": 16,
   "inventory_rows": 19,
   "faq_articles": 20,
   "conversations": 3,

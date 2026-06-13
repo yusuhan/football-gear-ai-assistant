@@ -61,6 +61,23 @@ class FootballGearAgentTest(unittest.TestCase):
         self.assertIn("体重和胸围", response.answer)
         self.assertNotIn("FG", response.answer)
 
+    def test_shin_guard_question_returns_shin_guards(self) -> None:
+        response = self.agent.answer(ChatRequest(message="护腿板有什么推荐的吗"))
+
+        self.assertEqual(response.intent, "product_recommendation")
+        self.assertEqual(response.tool_calls[0].arguments["category"], "shin_guards")
+        self.assertIn("Shin Guards", response.answer)
+        self.assertNotIn("Tiempo", response.answer)
+
+    def test_socks_and_jersey_questions_use_their_categories(self) -> None:
+        socks = self.agent.answer(ChatRequest(message="推荐一双足球袜"))
+        jersey = self.agent.answer(ChatRequest(message="推荐训练球衣"))
+
+        self.assertEqual(socks.tool_calls[0].arguments["category"], "football_socks")
+        self.assertIn("Socks", socks.answer)
+        self.assertEqual(jersey.tool_calls[0].arguments["category"], "football_apparel")
+        self.assertIn("Jersey", jersey.answer)
+
 
 if __name__ == "__main__":
     unittest.main()
