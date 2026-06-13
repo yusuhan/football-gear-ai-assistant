@@ -45,6 +45,7 @@
 - 新增公网部署指南与 `validate_deployment.py`，可自动检查健康状态、CORS 和前端可达性。
 - 将生产数据层迁移为 PostgreSQL：新增 SQLite/PostgreSQL 适配器，Render 改用 Free 实例，Neon 保存持久数据。
 - 修复 Render 2026 默认 Python 3.14 与锁定依赖不兼容的问题，生产运行时固定为 Python 3.11.11。
+- 修复 psycopg 批量种子写入：PostgreSQL `executemany` 改由 cursor 执行，并增加适配层回归测试。
 
 ### 本地验证
 

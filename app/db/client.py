@@ -40,7 +40,12 @@ class DatabaseConnection:
         return self.raw.execute(self._adapt_query(query), list(params))
 
     def executemany(self, query: str, params: Iterable[Iterable[Any]]):
-        return self.raw.executemany(self._adapt_query(query), params)
+        adapted_query = self._adapt_query(query)
+        if self.postgres:
+            cursor = self.raw.cursor()
+            cursor.executemany(adapted_query, params)
+            return cursor
+        return self.raw.executemany(adapted_query, params)
 
     def executescript(self, script: str) -> None:
         if not self.postgres:

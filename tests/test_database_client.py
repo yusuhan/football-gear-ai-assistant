@@ -3,6 +3,7 @@
 import unittest
 from pathlib import Path
 from tempfile import TemporaryDirectory
+from unittest.mock import Mock
 
 from app.db.client import DatabaseConnection, connect_database, is_postgres
 
@@ -32,6 +33,24 @@ class DatabaseClientTest(unittest.TestCase):
             connection._adapt_query("SELECT * FROM products WHERE id = ? AND price <= ?"),
             "SELECT * FROM products WHERE id = %s AND price <= %s",
         )
+
+    def test_postgres_executemany_uses_cursor(self) -> None:
+        connection = DatabaseConnection.__new__(DatabaseConnection)
+        connection.postgres = True
+        connection.raw = Mock()
+        cursor = connection.raw.cursor.return_value
+        rows = [["one", 1], ["two", 2]]
+
+        result = connection.executemany(
+            "INSERT INTO sample (id, value) VALUES (?, ?)",
+            rows,
+        )
+
+        cursor.executemany.assert_called_once_with(
+            "INSERT INTO sample (id, value) VALUES (%s, %s)",
+            rows,
+        )
+        self.assertIs(result, cursor)
 
 
 if __name__ == "__main__":
