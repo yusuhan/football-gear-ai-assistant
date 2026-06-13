@@ -46,10 +46,11 @@
 - 将生产数据层迁移为 PostgreSQL：新增 SQLite/PostgreSQL 适配器，Render 改用 Free 实例，Neon 保存持久数据。
 - 修复 Render 2026 默认 Python 3.14 与锁定依赖不兼容的问题，生产运行时固定为 Python 3.11.11。
 - 修复 psycopg 批量种子写入：PostgreSQL `executemany` 改由 cursor 执行，并增加适配层回归测试。
+- 公网验收脚本超时调整为 90 秒，以覆盖 Render Free 实例冷启动场景。
 
 ### 本地验证
 
-- `.venv/bin/python -m unittest discover -s tests`：31 个测试通过。
+- `.venv/bin/python -m unittest discover -s tests`：32 个测试通过。
 - 后端依赖已安装在 `.venv`。
 - FastAPI 已启动并通过 curl 验证：
   - `/health`
@@ -68,6 +69,8 @@
 - 从停止状态运行 `./scripts/start-local.sh`：前后端启动成功，自动冒烟测试通过。
 - 演示数据重置在独立临时数据库中验证通过，未自动清空当前开发数据库。
 - 公网验收脚本已对本地前后端验证通过：健康检查、CORS 和前端访问均正常。
+- Render Free 后端与 Neon PostgreSQL 已部署上线，健康检查、库存和尺码工具调用验证通过。
+- Vercel Free 前端已部署上线，生产 CORS 和前端 HTTP 访问验证通过。
 
 ### 当前限制
 
@@ -80,6 +83,5 @@
 
 ### 下一步
 
-- 创建 Neon Free 数据库，并将连接字符串填入 Render Blueprint 的 `DATABASE_URL`。
-- 重新创建 Render Free Blueprint，再创建 Vercel 项目。
-- 获得两个公网域名后运行 `scripts/validate_deployment.py` 完成端到端验收。
+- 在公网聊天页面完成人工点击验收，并验证 `/admin/handoffs` 登录与工单闭环。
+- 根据真实渠道需求接入淘宝、1688 或企业微信消息回调。

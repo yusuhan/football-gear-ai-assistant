@@ -3,6 +3,7 @@
 
 import argparse
 import json
+import socket
 import sys
 from typing import Optional
 from urllib.error import HTTPError, URLError
@@ -18,7 +19,7 @@ def parse_args() -> argparse.Namespace:
 
 def request(url: str, method: str = "GET", headers: Optional[dict[str, str]] = None):
     opener = build_opener(ProxyHandler({}))
-    return opener.open(Request(url, method=method, headers=headers or {}), timeout=20)
+    return opener.open(Request(url, method=method, headers=headers or {}), timeout=90)
 
 
 def validate(backend_url: str, frontend_url: str) -> None:
@@ -58,7 +59,7 @@ def main() -> int:
     args = parse_args()
     try:
         validate(args.backend, args.frontend)
-    except (HTTPError, URLError, RuntimeError, TimeoutError) as error:
+    except (HTTPError, URLError, RuntimeError, TimeoutError, socket.timeout) as error:
         print(f"FAIL {error}", file=sys.stderr)
         return 1
     return 0

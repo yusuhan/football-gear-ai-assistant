@@ -140,7 +140,7 @@ curl -X POST http://127.0.0.1:8000/chat \
 .venv/bin/python -m unittest discover -s tests
 ```
 
-当前已验证：31 个后端测试通过。
+当前已验证：32 个后端测试通过。
 
 前端验证：
 
@@ -186,3 +186,11 @@ uvicorn app.main:app --reload
 - [架构图](docs/ARCHITECTURE.md)
 - [面试讲解文档](docs/INTERVIEW_GUIDE.md)
 - [公网部署指南](docs/DEPLOYMENT.md)
+
+## 公网环境
+
+- 前端：https://football-gear-ai-assistant.vercel.app
+- 后端：https://football-gear-ai-assistant-api.onrender.com
+- API 文档：https://football-gear-ai-assistant-api.onrender.com/docs
+
+生产环境使用 Vercel Free、Render Free 和 Neon Free。Render 免费实例休眠后，首次请求可能需要等待约 50 秒。
