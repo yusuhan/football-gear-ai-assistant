@@ -13,7 +13,7 @@
 
 ## 技术栈
 
-- 后端：Python、FastAPI、Pydantic
+- 后端：Python 3.11、FastAPI、Pydantic
 - Agent：OpenAI SDK 可选，默认本地规则路由保证演示稳定
 - Tool Calling：`check_inventory`、`search_products`、`get_size_recommendation`
 - 数据库：本地 SQLite / 生产 PostgreSQL
