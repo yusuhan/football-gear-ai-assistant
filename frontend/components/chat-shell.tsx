@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { FormEvent, KeyboardEvent, useState } from "react";
 import { Send, ShieldCheck, Sparkles } from "lucide-react";
 import { sendChat, streamChat } from "@/lib/api";
 
@@ -10,14 +10,14 @@ type Message = {
   content: string;
 };
 
-const examples = ["推荐800元以内足球鞋", "Mercurial 16 Elite有43码吗", "多久发货", "脚长27厘米穿什么码"];
+const examples = ["推荐护腿板", "Mercurial 16 Elite有43码吗", "多久发货", "你是谁"];
 
 export function ChatShell() {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: "welcome",
       role: "assistant",
-      content: "你好，我是 Football Gear AI Assistant。可以帮你推荐足球鞋、查库存、看尺码和回答售后问题。",
+      content: "你好，我是接入商家工作流的足球装备智能客服。可以帮你推荐装备、查库存尺码、回答售后政策，并在订单异常或投诉退款时转接人工。",
     },
   ]);
   const [input, setInput] = useState("");
@@ -64,6 +64,13 @@ export function ChatShell() {
     setInput(example);
   }
 
+  function handleInputKeyDown(event: KeyboardEvent<HTMLTextAreaElement>) {
+    if (event.key === "Enter" && !event.shiftKey && !event.nativeEvent.isComposing) {
+      event.preventDefault();
+      event.currentTarget.form?.requestSubmit();
+    }
+  }
+
   return (
     <main className="flex min-h-screen flex-col bg-[#f6f8f5]">
       <header className="border-b border-zinc-200 bg-white">
@@ -74,7 +81,7 @@ export function ChatShell() {
             </div>
             <div>
               <h1 className="text-lg font-semibold text-zinc-950">Football Gear AI Assistant</h1>
-              <p className="text-sm text-zinc-500">Agent · Tool Calling · RAG · FastAPI</p>
+              <p className="text-sm text-zinc-500">嵌入商家工作流的智能客服</p>
             </div>
           </div>
           <div className="hidden items-center gap-3 text-sm text-zinc-600 sm:flex">
@@ -83,7 +90,7 @@ export function ChatShell() {
             </a>
             <div className="flex items-center gap-2">
               <ShieldCheck size={18} className="text-pitch" aria-hidden="true" />
-              Local MVP
+              Production MVP
             </div>
           </div>
         </div>
@@ -128,7 +135,8 @@ export function ChatShell() {
           <textarea
             value={input}
             onChange={(event) => setInput(event.target.value)}
-            placeholder="输入：推荐800元以内足球鞋 / Mercurial 16 Elite有43码吗"
+            onKeyDown={handleInputKeyDown}
+            placeholder="咨询装备、库存、尺码、物流或售后；Enter 发送，Shift+Enter 换行"
             rows={2}
             className="min-h-12 flex-1 resize-none border-0 bg-transparent text-sm leading-6 outline-none placeholder:text-zinc-400"
           />

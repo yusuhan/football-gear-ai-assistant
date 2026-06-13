@@ -110,6 +110,37 @@ class APITest(unittest.TestCase):
         self.assertEqual(second_response.json()["route"], "handoff")
         self.assertEqual(second_response.json()["intent"], "human_handoff")
 
+    def test_identity_question_does_not_create_handoff(self) -> None:
+        response = self.client.post("/chat", json={"message": "你是谁"})
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()["intent"], "assistant_identity")
+        self.assertFalse(response.json()["needs_handoff"])
+
+    def test_identity_question_is_answered_during_active_handoff(self) -> None:
+        first_response = self.client.post("/chat", json={"message": "我要投诉"})
+        conversation_id = first_response.json()["conversation_id"]
+
+        identity_response = self.client.post(
+            "/chat",
+            json={"conversation_id": conversation_id, "message": "你是谁"},
+        )
+        business_response = self.client.post(
+            "/chat",
+            json={"conversation_id": conversation_id, "message": "多久发货"},
+        )
+
+        self.assertEqual(identity_response.json()["intent"], "assistant_identity")
+        self.assertEqual(identity_response.json()["route"], "self_service")
+        self.assertEqual(business_response.json()["route"], "handoff")
+
+    def test_unknown_question_asks_for_context_without_handoff(self) -> None:
+        response = self.client.post("/chat", json={"message": "你觉得怎么样"})
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()["route"], "fallback")
+        self.assertFalse(response.json()["needs_handoff"])
+
     def test_channel_message_reuses_external_conversation_mapping(self) -> None:
         payload = {
             "external_user_id": "buyer_001",

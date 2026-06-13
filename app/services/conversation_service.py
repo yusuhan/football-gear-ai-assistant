@@ -34,7 +34,7 @@ class ConversationService:
         self.repository.create_message(conversation_id, role="user", content=request.message)
 
         active_handoff = self.repository.get_active_handoff_ticket(conversation_id)
-        if active_handoff:
+        if active_handoff and not self.agent.can_answer_during_handoff(request.message):
             return self._handoff_waiting_response(conversation_id, active_handoff)
 
         response = self.agent.answer(request)

@@ -78,6 +78,14 @@ class FootballGearAgentTest(unittest.TestCase):
         self.assertEqual(jersey.tool_calls[0].arguments["category"], "football_apparel")
         self.assertIn("Jersey", jersey.answer)
 
+    def test_identity_question_explains_merchant_workflow_role(self) -> None:
+        response = self.agent.answer(ChatRequest(message="你是谁"))
+
+        self.assertEqual(response.intent, "assistant_identity")
+        self.assertEqual(response.route, "self_service")
+        self.assertIn("商家工作流", response.answer)
+        self.assertIn("人工客服", response.answer)
+
 
 if __name__ == "__main__":
     unittest.main()

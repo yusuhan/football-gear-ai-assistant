@@ -4,7 +4,7 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "Football Gear AI Assistant",
-  description: "AI customer support demo for football gear retail.",
+  description: "嵌入商家工作流的足球装备智能客服。",
 };
 
 export default function RootLayout({

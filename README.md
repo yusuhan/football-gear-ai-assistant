@@ -1,6 +1,6 @@
 # Football Gear AI Assistant
 
-足球用品零售 AI 客服系统。当前版本已经具备 Agent、Tool Calling、FAQ RAG、FastAPI、数据库持久化、前端聊天界面和运营后台，可继续扩展到淘宝/1688/企微/CRM 等真实客服渠道。
+面向足球用品商家的 AI 客服系统。它不是独立的通用聊天机器人，而是通过渠道适配层接入淘宝、1688、企微、独立站或 CRM 工作流，使用商家的商品、库存、知识库和人工客服队列完成客户服务。
 
 ## 项目目标
 
@@ -27,10 +27,10 @@
 - 每次聊天会自动创建或复用 `conversation_id`。
 - 用户消息、AI 回复、工具调用和 Agent 事件会写入 SQLite。
 - 支持查询会话历史：`GET /conversations/{conversation_id}/messages`。
-- 投诉、退款、人工请求、fallback 和低置信度会自动创建人工接管工单。
+- 投诉、退款、明确人工请求和订单异常会自动创建人工接管工单。
 - 支持查询人工队列：`GET /handoff-tickets`。
 - 支持人工处理工单：`PATCH /handoff-tickets/{ticket_id}`。
-- 会话存在 open/in_progress 工单时，后续消息只进入人工队列，不再触发 AI 自动回复；工单 resolved 后恢复 AI。
+- 会话存在 open/in_progress 工单时，业务消息进入人工队列；助手身份和能力范围等安全元问题仍可由 AI 回答，工单 resolved 后恢复完整 AI 服务。
 - 支持渠道适配入口：`POST /channels/{channel}/messages`，可模拟淘宝/1688/企微等外部消息源。
 - 运营后台支持 `admin` 和 `support` 两种角色、短期会话令牌与操作审计日志。
 - 管理员可创建、启停和调整运营账号，重置其他账号密码，并管理全部在线会话。
@@ -141,7 +141,7 @@ curl -X POST http://127.0.0.1:8000/chat \
 .venv/bin/python -m unittest discover -s tests
 ```
 
-当前已验证：37 个后端测试通过。
+当前已验证：41 个后端测试通过。
 
 前端验证：
 

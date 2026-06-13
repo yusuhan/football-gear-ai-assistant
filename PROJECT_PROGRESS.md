@@ -49,10 +49,12 @@
 - 公网验收脚本超时调整为 90 秒，以覆盖 Render Free 实例冷启动场景。
 - 修复生产对话误路由：增加鞋楦宽度筛选、球衣尺码澄清，并移除中文单字 RAG 误匹配。
 - 扩展完整足球装备目录：球衣、球袜、护腿板和足球成为独立品类，推荐工具支持按品类准确筛选。
+- 明确产品为嵌入商家渠道与运营流程的智能客服，并收紧转人工策略，身份问题不再创建或阻塞人工工单。
+- 聊天输入支持 Enter 发送、Shift+Enter 换行，并更新生产环境定位文案。
 
 ### 本地验证
 
-- `.venv/bin/python -m unittest discover -s tests`：37 个测试通过。
+- `.venv/bin/python -m unittest discover -s tests`：41 个测试通过。
 - 后端依赖已安装在 `.venv`。
 - FastAPI 已启动并通过 curl 验证：
   - `/health`

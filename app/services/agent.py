@@ -15,6 +15,11 @@ from app.services.rag import FAQHit, FAQKnowledgeBase
 from app.services.tools import OPENAI_TOOL_DEFINITIONS, ToolRouter
 
 FALLBACK_ANSWER = "我还没有找到足够准确的信息。你可以告诉我位置、预算、尺码、脚长或具体商品名，我会继续帮你查。"
+IDENTITY_ANSWER = (
+    "我是商家工作流中的足球装备智能客服，负责接待商品咨询、装备推荐、库存尺码和售后政策问题。"
+    "我会调用商家的商品、库存和知识库来回答；涉及具体订单异常、投诉退款或你明确要求真人时，"
+    "我会创建工单交给人工客服继续处理。"
+)
 APPAREL_SIZE_CLARIFICATION = (
     "仅凭身高还不能准确推荐球衣尺码。请再提供体重和胸围，并告诉我具体品牌或款式；"
     "不同品牌版型差异较大，当前没有对应尺码表时我不会直接猜尺码。"
@@ -63,6 +68,9 @@ class FootballGearAgent:
     def answer(self, request: ChatRequest) -> ChatResponse:
         """Answer a customer message through OpenAI tools or local routing."""
 
+        if self.is_identity_question(request.message):
+            return self._identity_response()
+
         if self.use_openai:
             try:
                 return self._answer_with_openai(request.message)
@@ -100,6 +108,40 @@ class FootballGearAgent:
             return self._faq_response(faq_hits)
 
         return ChatResponse(answer=FALLBACK_ANSWER, intent="fallback", confidence=0.2, route="fallback")
+
+    def can_answer_during_handoff(self, message: str) -> bool:
+        """Allow harmless assistant identity questions while a human ticket is active."""
+
+        return self.is_identity_question(message)
+
+    @staticmethod
+    def _identity_response() -> ChatResponse:
+        """Describe the assistant's role without invoking tools or a model."""
+
+        return ChatResponse(
+            answer=IDENTITY_ANSWER,
+            intent="assistant_identity",
+            confidence=0.98,
+            route="self_service",
+        )
+
+    @staticmethod
+    def is_identity_question(message: str) -> bool:
+        """Detect questions about the assistant and its role in the merchant workflow."""
+
+        normalized = re.sub(r"[？?。！!\s]", "", message.lower())
+        exact_phrases = {
+            "你是谁",
+            "你是什么",
+            "你是什么东西",
+            "你是机器人吗",
+            "你是ai吗",
+            "你是客服吗",
+            "你能做什么",
+            "你的功能",
+            "你的能力",
+        }
+        return normalized in exact_phrases or normalized.endswith("你是谁")
 
     def _answer_with_openai(self, message: str) -> ChatResponse:
         """Use OpenAI function calling when an API key is available."""
